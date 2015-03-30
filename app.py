@@ -1,4 +1,5 @@
 import os
+import time
 from collections import OrderedDict
 
 import boto
@@ -147,9 +148,32 @@ def generate_signed_url():
         distribution.create_signed_url(
             url,
             current_app.config['CLOUDFRONT_KEY_ID'],
+            policy_url=scheme + distribution.domain_name + '/*',
+            expire_time=int(time.time()) + 60 * 60,
             private_key_file=current_app.config['PRIVATE_KEY_FILE']
         )
     )
+
+
+@app.route('/test-video-streaming', methods=['GET'])
+def video_streaming_test():
+    """
+    Renders a video using flowplayer
+    """
+    distribution = status.distribution
+
+    s3key = 'video.mp4'
+    scheme = 'https://'
+    url = scheme + distribution.domain_name + '/' + s3key
+
+    url = distribution.create_signed_url(
+        url,
+        current_app.config['CLOUDFRONT_KEY_ID'],
+        policy_url=scheme + distribution.domain_name + '/*',
+        expire_time=int(time.time()) + 60 * 60,
+        private_key_file=current_app.config['PRIVATE_KEY_FILE']
+    )
+    return render_template('video.html', url=url)
 
 
 @app.route('/generate-signed-cookie', methods=['POST'])
@@ -157,7 +181,27 @@ def generate_signed_cookie():
     """
     Drop a signed cookie and then redirect to URL
     """
-    return redirect()
+    distribution = status.distribution
+
+    s3key = request.form['s3key']
+    scheme = request.form.get('scheme', 'http') + '://'
+    url = scheme + distribution.domain_name + '/' + s3key
+
+    # Render a page to set the cookies and then redirect
+    # to cf.
+    response = current_app.make_response(
+        render_template('redirect.html', url=url)
+    )
+
+    # Now set the cookies
+    # Cloudfront key
+    response.set_cookie(
+        key='CloudFront-Key-Pair-Id',
+        value=current_app.config['CLOUDFRONT_KEY_ID'],
+        domain=distribution.domain_name,
+    )
+
+    return response
 
 
 if __name__ == '__main__':
