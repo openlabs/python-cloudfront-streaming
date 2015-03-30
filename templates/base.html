@@ -1,6 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="">
 	<head>
+    {% block head %}
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>Bootstrap Boilerplate</title>
@@ -17,6 +18,7 @@
 			<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
 		<![endif]-->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    {% endblock %}
 	</head>
 	<body>
     {% block navbar %}

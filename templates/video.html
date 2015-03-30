@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<!-- 1. skin -->
+<link rel="stylesheet" href="//releases.flowplayer.org/5.5.2/skin/minimalist.css">
+<link rel="stylesheet" href="https://flowplayer.org/drive/quality-selector.css">
+ 
+<!-- 2. jquery library -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+ 
+<!-- 3. flowplayer -->
+<script src="//releases.flowplayer.org/5.5.2/flowplayer.min.js"></script>
+<script src="https://flowplayer.org/drive/quality-selector.js"></script>
+{% endblock %}
+
+{% block container %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="flowplayer" 
+          data-defaultQuality="480p"
+          data-qualities="480p,720p,1080p">
+         <video>
+           <source type="video/mp4"
+           src="{{ url }}">
+         </video>
+      </div>      
+    </div>
+  </div>
+{% endblock %}
