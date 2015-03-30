@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% macro render_parameters(status, parameters) %}
+<table class="table table-bordered">
+  {% for parameter in parameters %}
+  <tr>
+    <td>{{ parameters[parameter] }}</td>
+    <td>
+      {% if status|attr(parameter) %}
+        <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+      {% else %}
+        <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endmacro %}
+
+
+{% macro form_fields() %}
+<div class="form-group">
+  <label for="s3key">S3 Key</label>
+  <input class="form-control" id="s3key" 
+    name="s3key" placeholder="ex: file.mp4">
+</div>
+<div class="form-group">
+  <label for="scheme">Scheme</label>
+  <select class="form-control" name="scheme">
+    <option value="http">http</option>
+    <option value="https">https</option>
+  </select>
+</div>
+<button type="submit" class="btn btn-default">Submit</button>
+{% endmacro %}
+
+
+{% block container %}
+
+  <div class="row">
+    {% block status %}
+    <div class="col-xs-12 col-md-3 col-sm-3">
+      <h2>Config</h2>
+      <br/>
+      {{ render_parameters(status, status.config_parameters) }}
+    </div>
+    <div class="col-xs-12 col-md-3 col-sm-3">
+      <h2>Connection</h2>
+      <br/>
+      {{ render_parameters(status, status.connection_parameters) }}
+    </div>          
+    {% endblock status %}
+
+    {% block generator %}
+
+    <div class="col-xs-12 col-md-6 col-sm-6">
+      <div role="tabpanel">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active">
+            <a href="#url" aria-controls="url" role="tab" data-toggle="tab">Signed URL</a>
+          </li>
+          <li role="presentation">
+            <a href="#cookie" aria-controls="cookie" role="tab" data-toggle="tab">Signed Cookie</a>
+          </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+
+          <!-- Signed URL -->
+          <div role="tabpanel" class="tab-pane active" id="url">
+            <form action="{{ url_for('generate_signed_url') }}" method="POST">
+              {{ form_fields() }}
+            </form>
+          </div>
+          <!-- End::Signed URL -->
+
+          <!-- Signed Cookie -->
+          <div role="tabpanel" class="tab-pane" id="cookie">
+            <form action="{{ url_for('generate_signed_cookie') }}" method="POST">
+              {{ form_fields() }}
+            </form>
+          </div>
+          <!-- End::Signed Cookie -->
+
+        </div>
+      </div>
+    </div>
+
+    {% endblock generator %}
+  </div>
+
+{% endblock container %}
