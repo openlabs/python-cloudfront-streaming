@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 
-{% block container %}
-  <h4>This page has set the cookies required to access content</h4>
-  <a href="{{ url }}">Click Here</a> to view content.
-{% endblock container %}
+{% block jumbotron %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>Content is Ready!</h1>
+    <p>
+      The cookies required to access the content have been set on browser!
+    </p>
+    <p>
+      <a class="btn btn-primary btn-lg" href="{{ url }}" role="button" target="new">
+        View Content &raquo;
+      </a>
+    </p>
+  </div>
+</div>
+{% endblock %}
